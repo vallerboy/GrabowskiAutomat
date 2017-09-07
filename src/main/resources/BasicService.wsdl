@@ -1,0 +1,1366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Valid from 2010/12/04, WebServices / FBSC version 1.5.0 -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tp="http://www.fleetboard.com/data" xmlns:tpns="http://ws.fleetboard.com/BasicService" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://ws.fleetboard.com/BasicService">
+    <types>
+        <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.fleetboard.com/data" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:simpleType name="idType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="inoidType">
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+            <xs:simpleType name="tmConfigIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="areaIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="fbidType">
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+            <xs:simpleType name="oidType">
+                <xs:annotation>
+                    <xs:documentation>
+                        The oid identifies an order. Unlike the fbid, it is not
+				unique in the database, only within a fleet.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+            <xs:simpleType name="tidType">
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+            <xs:simpleType name="trackingidType">
+                <xs:annotation>
+                    <xs:documentation>
+                        The trackingid identifies one or more orders in the
+				order tracking system. Unlike the fbid or oid attributes
+				it isn't unique at all. If the creator doesn't supply a
+				trackingid, it is automatically generated.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="51"/>
+                    <xs:minLength value="2"/>
+                    <xs:pattern value="[A-Z0-9\-]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="limitType">
+                <xs:restriction base="xs:integer"/>
+            </xs:simpleType>
+            <xs:simpleType name="offsetType">
+                <xs:restriction base="xs:integer"/>
+            </xs:simpleType>
+            <xs:simpleType name="resultSizeType">
+                <xs:restriction base="xs:integer"/>
+            </xs:simpleType>
+            <xs:simpleType name="responseSizeType">
+                <xs:restriction base="xs:integer"/>
+            </xs:simpleType>
+            <xs:simpleType name="vehicleidType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="vehicleGroupIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="driverNameIDType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="driverGroupIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="priceGroupIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="telematicGroupIDType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="MB"/>
+                    <xs:enumeration value="AM"/>
+                    <xs:enumeration value="DISPOSITION"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="serviceType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="VM"/>
+                    <xs:enumeration value="TM"/>
+                    <xs:enumeration value="ALL"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="alarmTypeType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="SERVICE-CALL"/>
+                    <xs:enumeration value="HOME-CALL"/>
+                    <xs:enumeration value="EVENT-CALL"/>
+                    <xs:enumeration value="EDW-ALARM"/>
+                    <xs:enumeration value="ECU-ALARM"/>
+                    <xs:enumeration value="DISPOPILOT-OVERFLOW"/>
+                    <xs:enumeration value="AREA-ENTRY"/>
+                    <xs:enumeration value="AREA-EXIT"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="configurationType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="AREAMONITORING"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="useridType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="userGroupIdType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="sessionidType">
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+            <xs:simpleType name="fleetidType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:simpleType name="msisdnType">
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="19"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="emailType">
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="6"/>
+                    <xs:maxLength value="64"/>
+                    <xs:pattern value="\w+([-+.'_]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="timestampType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Date format 'yyyy-MM-dd HH:mm:ss'
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:minLength value="19"/>
+                    <xs:maxLength value="19"/>
+                    <xs:pattern value="([0-9]{4}-[0-9]{2}-[0-9]{2}[ ]{1}[0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}:[0-5]{1}[0-9]{1})"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:complexType name="TPDate">
+                <xs:sequence>
+                    <xs:element name="Begin" type="tp:timestampType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                pattern: 'yyyy-mm-dd HH:mm:ss'
+                            </xs:documentation>
+                            <xs:documentation>
+                                Date format 'yyyy-MM-dd HH:mm:ss'
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="End" type="tp:timestampType" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>
+                                pattern: 'yyyy-mm-dd HH:mm:ss'
+                            </xs:documentation>
+                            <xs:documentation>
+                                Date format 'yyyy-MM-dd HH:mm:ss'
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="PropertyType">
+                <xs:sequence>
+                    <xs:element name="Name" type="xs:string"/>
+                    <xs:element name="Value" type="xs:string" nillable="true"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="okResultType">
+                <xs:sequence>
+                    <xs:element name="OKResult" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="vehicleID" type="tp:vehicleidType" use="required"/>
+                            <xs:attribute name="inoid" type="tp:inoidType" use="required"/>
+                            <xs:attribute name="fbid" type="tp:fbidType" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="errorResultType">
+                <xs:sequence>
+                    <xs:element name="ErrorResult" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="vehicleID" type="tp:vehicleidType" use="required"/>
+                            <xs:attribute name="faultcode" type="xs:integer" use="required"/>
+                            <xs:attribute name="faultstring" type="xs:string" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="statusReportType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="VEHICLE"/>
+                    <xs:enumeration value="TOUR"/>
+                    <xs:enumeration value="ORDER"/>
+                    <xs:enumeration value="EVENT"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="versionType">
+                <xs:restriction base="xs:long"/>
+            </xs:simpleType>
+            <xs:complexType name="okType">
+                <xs:sequence>
+                    <xs:element name="OKResult" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="id" type="tp:idType" use="optional"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="errorType">
+                <xs:sequence>
+                    <xs:element name="ErrorResult" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:attribute name="id" type="tp:idType" use="optional"/>
+                            <xs:attribute name="faultcode" type="xs:integer" use="required"/>
+                            <xs:attribute name="faultstring" type="xs:string" use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="driverStatusType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="ACTIVE"/>
+                    <xs:enumeration value="INACTIVE"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="userStatusType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="ACTIVE"/>
+                    <xs:enumeration value="DISABLED"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:complexType name="dtcoCapabilityType">
+                <xs:sequence>
+                    <xs:element name="Type" type="xs:short"/>
+                    <xs:element name="Value" type="xs:short"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:simpleType name="leasingStatusType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="LENT"/>
+                    <xs:enumeration value="RENTED"/>
+                    <xs:enumeration value="OWNED"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="tmmodeType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="MASTERFLEETONLY"/>
+                    <xs:enumeration value="PARTNERFLEETONLY"/>
+                    <xs:enumeration value="MASTERFLEETISOWNER"/>
+                    <xs:enumeration value="PARTNERFLEETISOWNER"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:element name="LoginResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for login
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="sessionid" type="tp:sessionidType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LogoutRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for logout
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LogoutResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for logout
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="OK" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetFleetRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getFleet
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="FleetId" type="tp:fleetidType"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                    <xs:attribute name="version" type="tp:versionType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RIGHT">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="NAME" type="xs:string"/>
+                        <xs:element name="TYPE" type="xs:integer"/>
+                        <xs:element name="SERVICE" type="xs:integer"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="FLEET">
+                <xs:annotation>
+                    <xs:documentation>
+                        The FleetBoard FLEET document
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="FLEETID" type="tp:fleetidType"/>
+                        <xs:element name="FLEETNAME" type="xs:string"/>
+                        <xs:element name="FLEETINFORMATION" nillable="true">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="STREET" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="POSTALCODE" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="CITY" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="COUNTRY" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="COUNTRYCODE" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="REGION" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="REGIONCODE" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="PAGEHEADING" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="FLEETTIMEZONE" type="xs:integer" minOccurs="0"/>
+                                    <xs:element name="FLEETTIMEZONEID" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="DLSAVING" type="xs:integer" minOccurs="0"/>
+                                    <xs:element name="DELTAETAMON" type="xs:integer" minOccurs="0"/>
+                                    <xs:element name="DELTAAREAMON" type="xs:integer" minOccurs="0"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="FLEETRIGHTS" nillable="true">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element ref="tp:RIGHT" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="FLEETPROPERTIES" nillable="true">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Property" type="tp:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="inoid" type="tp:inoidType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetFleetResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getFleet
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:FLEET"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType"/>
+                    <xs:attribute name="offset" type="tp:offsetType"/>
+                    <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                    <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetVehicleRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getVehicle
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="VehicleGroup" type="tp:vehicleGroupIdType" minOccurs="0"/>
+                        <xs:element name="ServiceType" type="tp:serviceType" minOccurs="0"/>
+                        <xs:element name="VehicleID" type="tp:inoidType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Status" type="xs:integer" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="Capability" type="tp:dtcoCapabilityType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="LeasingStatus" type="tp:leasingStatusType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="TMMode" type="tp:tmmodeType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                    <xs:attribute name="version" type="tp:versionType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="VEHICLE">
+                <xs:annotation>
+                    <xs:documentation>
+                        The VEHICLE table mapped into an XML document.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="CHASSIS" type="xs:string"/>
+                        <xs:element name="VEHICLEHARDWARE" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="HARDWARE" type="xs:string"/>
+                                    <xs:element name="HARDWAREID" type="xs:integer"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="FLEETVEHICLE">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="FLEETID" type="tp:fleetidType"/>
+                                    <xs:element name="REGISTRATION" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="VEHICLENUMBER" type="xs:string"/>
+                                    <xs:element name="INSMSISDN" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="STARTTIME" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="ENDTIME" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="VEHICLETYPE" type="xs:string" minOccurs="0"/>
+                                    <xs:element name="STATUS" type="xs:integer" minOccurs="0"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="GROUPVEHICLE" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="GROUPID" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="REGISTRATIONDATE" type="xs:string" minOccurs="0"/>
+                        <xs:element name="TELEMATICGROUP" type="tp:telematicGroupIDType" minOccurs="0"/>
+                        <xs:element name="VEHICLEPROPERTIES" minOccurs="0">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Property" type="tp:PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="inoid" type="tp:inoidType" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetVehicleResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getVehicle
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" ref="tp:VEHICLE"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType"/>
+                    <xs:attribute name="offset" type="tp:offsetType"/>
+                    <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                    <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetVehicleGroupRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getVehicleGroup
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="1" minOccurs="0" name="FleetId" type="tp:fleetidType"/>
+                        <xs:element maxOccurs="1" minOccurs="0" name="GroupId" type="tp:vehicleGroupIdType"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                    <xs:attribute name="version" type="tp:versionType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="VEHICLEGROUP">
+                <xs:annotation>
+                    <xs:documentation>
+                        The VEHICLEGROUP table mapped into an XML document.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="GROUPID" type="xs:string"/>
+                        <xs:element name="FLEETID" type="tp:fleetidType"/>
+                        <xs:element name="GROUPNAME" type="xs:string"/>
+                        <xs:element name="Description" type="xs:string" maxOccurs="1" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="inoid" type="tp:inoidType" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetVehicleGroupResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getVehicleGroup
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" ref="tp:VEHICLEGROUP"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType"/>
+                    <xs:attribute name="offset" type="tp:offsetType"/>
+                    <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                    <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetServerPropertiesRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getServerProperties
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Property">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="TIME"/>
+                                    <xs:enumeration value="VERSION"/>
+                                    <xs:enumeration value="QUERYLIMITS"/>
+                                    <xs:enumeration value="FIELDLIMITS"/>
+                                    <xs:enumeration value="MAPPING"/>
+                                    <xs:enumeration value="UPDATESERVICE"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetServerPropertiesResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getServerProperties
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="Property" type="tp:PropertyType"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType"/>
+                    <xs:attribute name="offset" type="tp:offsetType"/>
+                    <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                    <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="GetStatusDefRequestType">
+                <xs:sequence>
+                    <xs:element name="Kind" minOccurs="0" maxOccurs="unbounded">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="VEHICLE"/>
+                                <xs:enumeration value="ORDER"/>
+                                <xs:enumeration value="TOUR"/>
+                                <xs:enumeration value="CLIENT"/>
+                                <xs:enumeration value="TIMEMGMT"/>
+                                <xs:enumeration value="EVENT"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="Inoid" type="tp:inoidType" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="Fbid" type="tp:fbidType" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="MultiFleet" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="TmConfigId" type="tp:tmConfigIdType" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                <xs:attribute name="version" type="tp:versionType" use="optional"/>
+            </xs:complexType>
+            <xs:element name="GetStatusDefRequest" type="tp:GetStatusDefRequestType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getStatusDef
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="User">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="USERID">
+                            <xs:simpleType>
+                                <xs:restriction base="tp:useridType"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="Timestamp" type="tp:timestampType">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    pattern: 'yyyy-mm-dd HH:mm:ss'
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="MsgID" minOccurs="0" maxOccurs="1">
+                            <xs:simpleType>
+                                <xs:restriction base="tp:inoidType"/>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Usertype" use="optional">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string"/>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="History">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" ref="tp:User"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TXMessage">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ReceiveRQ" type="xs:string"/>
+                        <xs:element minOccurs="0" name="ReadRQ" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="RXMessage">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Popup" type="xs:string"/>
+                        <xs:element minOccurs="0" name="Sound" type="xs:string"/>
+                        <xs:element minOccurs="0" name="Email">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:maxLength value="500"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="SMS" type="xs:string"/>
+                        <xs:element minOccurs="0" name="Orderdone" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Action">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" ref="tp:TXMessage"/>
+                        <xs:element minOccurs="0" ref="tp:RXMessage"/>
+                        <xs:element minOccurs="0" name="Request">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element maxOccurs="unbounded" minOccurs="1" name="Service" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="StatusLayout">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Text" type="xs:string"/>
+                        <xs:element name="BGColor" type="xs:string"/>
+                        <xs:element name="FontColor" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Hidden" nillable="true">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="DCFAP" type="xs:integer"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="VhcStatusLayout" nillable="true">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" ref="tp:Hidden"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SemanticsDef">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" name="Semantics">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Denotation" type="xs:string"/>
+                                    <xs:element name="SemanticId" type="xs:long" minOccurs="0"/>
+                                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Scope" type="xs:string"/>
+                                    <xs:element maxOccurs="1" minOccurs="0" name="Value" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="StatusDef">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="FLEETID" type="tp:fleetidType"/>
+                        <xs:element name="Type">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="Kind" type="xs:string"/>
+                                    <xs:element name="ATSRegister" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element ref="tp:StatusLayout"/>
+                        <xs:element ref="tp:Action"/>
+                        <xs:element minOccurs="0" ref="tp:History"/>
+                        <xs:element minOccurs="0" name="Visible" type="xs:string"/>
+                        <xs:element minOccurs="0" name="Showable" type="xs:integer"/>
+                        <xs:element minOccurs="0" name="StatusGroup" type="xs:string"/>
+                        <xs:element minOccurs="0" ref="tp:VhcStatusLayout"/>
+                        <xs:element minOccurs="0" ref="tp:SemanticsDef"/>
+                        <xs:element minOccurs="0" name="FormDefInoID" type="tp:inoidType"/>
+                    </xs:sequence>
+                    <xs:attribute name="inoid" type="tp:inoidType"/>
+                    <xs:attribute name="fbid" type="tp:fbidType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="GetStatusDefResponseType">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" ref="tp:StatusDef"/>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType"/>
+                <xs:attribute name="offset" type="tp:offsetType"/>
+                <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+            </xs:complexType>
+            <xs:element name="GetStatusDefResponse" type="tp:GetStatusDefResponseType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Reponse document for getStatusReport
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GetUserRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getUser
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="SettingsType">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="UserSettings"/>
+                                    <xs:enumeration value="RightSettings"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="UserID" type="tp:useridType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="ProfileId" type="tp:idType"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                    <xs:attribute name="version" type="tp:versionType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="TmSoapUserType">
+                <xs:sequence>
+                    <xs:element name="ID" type="xs:long"/>
+                    <xs:element minOccurs="0" name="UserSettings">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="FleetID" type="tp:fleetidType"/>
+                                <xs:element name="Name" type="xs:string"/>
+                                <xs:element name="Description" type="xs:string" minOccurs="0"/>
+                                <xs:element name="Locale" type="xs:string"/>
+                                <xs:element name="Login" type="xs:string"/>
+                                <xs:element minOccurs="0" name="Status" type="xs:integer"/>
+                                <xs:element minOccurs="0" name="UserGroup" type="xs:string"/>
+                                <xs:element minOccurs="0" name="ProfileId" type="tp:idType"/>
+                                <xs:element minOccurs="0" name="EndDate" type="tp:timestampType"/>
+                                <xs:element minOccurs="0" name="MobilePhone" type="xs:string"/>
+                                <xs:element minOccurs="0" name="Email" type="xs:string"/>
+                                <xs:element minOccurs="0" name="CSVSeparator" type="xs:string"/>
+                                <xs:element minOccurs="0" name="LastAmended" type="xs:string"/>
+                                <xs:element minOccurs="0" name="AmendedBy" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element minOccurs="0" name="RightSettings">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element maxOccurs="unbounded" minOccurs="0" name="Right" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="GetUserResponseType">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="User" type="tp:TmSoapUserType"/>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType"/>
+                <xs:attribute name="offset" type="tp:offsetType"/>
+                <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+            </xs:complexType>
+            <xs:element name="GetUserResponse" type="tp:GetUserResponseType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getUser
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:complexType name="GetDriverRequestType">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="DriverNameID" type="tp:driverNameIDType"/>
+                    <xs:element name="DriverGroupID" type="tp:driverGroupIdType" maxOccurs="1" minOccurs="0"/>
+                    <xs:element name="Status" type="tp:driverStatusType" maxOccurs="1" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                <xs:attribute name="version" type="tp:versionType" use="optional"/>
+            </xs:complexType>
+            <xs:element name="GetDriverRequest" type="tp:GetDriverRequestType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getDriver
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:complexType name="GetDriverResponseType">
+                <xs:sequence>
+                    <xs:element name="DriverInfo" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="DriverNameID" type="tp:driverNameIDType"/>
+                                <xs:element name="DriverToken" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="DriverTokenKind">
+                                                <xs:simpleType>
+                                                    <xs:restriction base="xs:string">
+                                                        <xs:enumeration value="SIM"/>
+                                                        <xs:enumeration value="FB"/>
+                                                        <xs:enumeration value="KEY"/>
+                                                        <xs:enumeration value="DTCO"/>
+                                                    </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:element>
+                                            <xs:element name="Token" type="xs:string"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="FirstName" type="xs:string"/>
+                                <xs:element name="LastName" type="xs:string"/>
+                                <xs:element name="Locale" type="xs:string"/>
+                                <xs:element name="Comment" type="xs:string"/>
+                                <xs:element name="Status" type="tp:driverStatusType" minOccurs="0"/>
+                                <xs:element name="DriverGroup" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="DriverGroupId" type="tp:driverGroupIdType" minOccurs="0" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType"/>
+                <xs:attribute name="offset" type="tp:offsetType"/>
+                <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+            </xs:complexType>
+            <xs:element name="GetDriverResponse" type="tp:GetDriverResponseType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getDriver
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GetCurrentUserRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getUser
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                    <xs:attribute name="version" type="tp:versionType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="GetCurrentUserResponseType">
+                <xs:sequence>
+                    <xs:element maxOccurs="1" minOccurs="0" name="User" type="tp:TmSoapUserType"/>
+                </xs:sequence>
+                <xs:attribute name="limit" type="tp:limitType"/>
+                <xs:attribute name="offset" type="tp:offsetType"/>
+                <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+            </xs:complexType>
+            <xs:element name="GetCurrentUserResponse" type="tp:GetCurrentUserResponseType">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getCurrentUser
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="GetDriverGroupRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for getDriverGroup
+@sessionid, limit, offset
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="FleetId" type="tp:fleetidType" minOccurs="0"/>
+                        <xs:element name="DriverGroupId" type="tp:driverGroupIdType" maxOccurs="1" minOccurs="0"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType" use="optional"/>
+                    <xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DriverGroup">
+                <xs:annotation>
+                    <xs:documentation>
+                        DriverGroup
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="DriverGroupId" type="tp:driverGroupIdType"/>
+                        <xs:element name="FleetId" type="tp:fleetidType"/>
+                        <xs:element name="Name" type="xs:string"/>
+                        <xs:element name="Description" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GetDriverGroupResponse">
+                <xs:annotation>
+                    <xs:documentation>
+                        Response document for getDriverGroup
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:DriverGroup" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                    <xs:attribute name="limit" type="tp:limitType"/>
+                    <xs:attribute name="offset" type="tp:offsetType"/>
+                    <xs:attribute name="resultSize" type="tp:resultSizeType"/>
+                    <xs:attribute name="responseSize" type="tp:responseSizeType"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LoginRequest">
+                <xs:annotation>
+                    <xs:documentation>
+                        Request document for login
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:annotation>
+                            <xs:documentation>
+                                Only one of fleetname, fleetid, fin and vehicleid is allowed at the same time.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:element name="Fleetname" minOccurs="0">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string"/>
+                            </xs:simpleType>
+                        </xs:element>
+
+
+                        <xs:element name="User">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element name="Password">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string"/>
+                            </xs:simpleType>
+                        </xs:element>
+
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="login">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:LoginRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="loginResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:LoginResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="logout">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:LogoutRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="logoutResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:LogoutResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getFleet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetFleetRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getFleetResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetFleetResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVehicle">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetVehicleRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVehicleResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetVehicleResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVehicleGroup">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetVehicleGroupRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getVehicleGroupResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetVehicleGroupResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getServerProperties">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetServerPropertiesRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getServerPropertiesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetServerPropertiesResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getStatusDef">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetStatusDefRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getStatusDefResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetStatusDefResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getUser">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetUserRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getUserResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetUserResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDriver">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetDriverRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDriverResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetDriverResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getCurrentUser">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetCurrentUserRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getCurrentUserResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetCurrentUserResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDriverGroup">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetDriverGroupRequest"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getDriverGroupResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tp:GetDriverGroupResponse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </types>
+    <message name="LoginRequestMessage">
+        <part element="tp:login" name="body"/>
+    </message>
+    <message name="LoginResponseMessage">
+        <part element="tp:loginResponse" name="body"/>
+    </message>
+    <message name="LogoutRequestMessage">
+        <part element="tp:logout" name="body"/>
+    </message>
+    <message name="LogoutResponseMessage">
+        <part element="tp:logoutResponse" name="body"/>
+    </message>
+    <message name="GetFleetRequestMessage">
+        <part element="tp:getFleet" name="body"/>
+    </message>
+    <message name="GetFleetResponseMessage">
+        <part element="tp:getFleetResponse" name="body"/>
+    </message>
+    <message name="GetVehicleRequestMessage">
+        <part element="tp:getVehicle" name="body"/>
+    </message>
+    <message name="GetVehicleResponseMessage">
+        <part element="tp:getVehicleResponse" name="body"/>
+    </message>
+    <message name="GetVehicleGroupRequestMessage">
+        <part element="tp:getVehicleGroup" name="body"/>
+    </message>
+    <message name="GetVehicleGroupResponseMessage">
+        <part element="tp:getVehicleGroupResponse" name="body"/>
+    </message>
+    <message name="GetServerPropertiesRequestMessage">
+        <part element="tp:getServerProperties" name="body"/>
+    </message>
+    <message name="GetServerPropertiesResponseMessage">
+        <part element="tp:getServerPropertiesResponse" name="body"/>
+    </message>
+    <message name="GetStatusDefRequestMessage">
+        <part element="tp:getStatusDef" name="body"/>
+    </message>
+    <message name="GetStatusDefResponseMessage">
+        <part element="tp:getStatusDefResponse" name="body"/>
+    </message>
+    <message name="GetUserRequestMessage">
+        <part element="tp:getUser" name="body"/>
+    </message>
+    <message name="GetUserResponseMessage">
+        <part element="tp:getUserResponse" name="body"/>
+    </message>
+    <message name="GetDriverRequestMessage">
+        <part element="tp:getDriver" name="body"/>
+    </message>
+    <message name="GetDriverResponseMessage">
+        <part element="tp:getDriverResponse" name="body"/>
+    </message>
+    <message name="GetCurrentUserRequestMessage">
+        <part element="tp:getCurrentUser" name="body"/>
+    </message>
+    <message name="GetCurrentUserResponseMessage">
+        <part element="tp:getCurrentUserResponse" name="body"/>
+    </message>
+    <message name="GetDriverGroupRequestMessage">
+        <part element="tp:getDriverGroup" name="body"/>
+    </message>
+    <message name="GetDriverGroupResponseMessage">
+        <part element="tp:getDriverGroupResponse" name="body"/>
+    </message>
+    <portType name="BasicService">
+        <operation name="login">
+            <input message="tpns:LoginRequestMessage"/>
+            <output message="tpns:LoginResponseMessage"/>
+        </operation>
+        <operation name="logout">
+            <input message="tpns:LogoutRequestMessage"/>
+            <output message="tpns:LogoutResponseMessage"/>
+        </operation>
+        <operation name="getFleet">
+            <input message="tpns:GetFleetRequestMessage"/>
+            <output message="tpns:GetFleetResponseMessage"/>
+        </operation>
+        <operation name="getVehicle">
+            <input message="tpns:GetVehicleRequestMessage"/>
+            <output message="tpns:GetVehicleResponseMessage"/>
+        </operation>
+        <operation name="getVehicleGroup">
+            <input message="tpns:GetVehicleGroupRequestMessage"/>
+            <output message="tpns:GetVehicleGroupResponseMessage"/>
+        </operation>
+        <operation name="getServerProperties">
+            <input message="tpns:GetServerPropertiesRequestMessage"/>
+            <output message="tpns:GetServerPropertiesResponseMessage"/>
+        </operation>
+        <operation name="getStatusDef">
+            <input message="tpns:GetStatusDefRequestMessage"/>
+            <output message="tpns:GetStatusDefResponseMessage"/>
+        </operation>
+        <operation name="getUser">
+            <input message="tpns:GetUserRequestMessage"/>
+            <output message="tpns:GetUserResponseMessage"/>
+        </operation>
+        <operation name="getDriver">
+            <input message="tpns:GetDriverRequestMessage"/>
+            <output message="tpns:GetDriverResponseMessage"/>
+        </operation>
+        <operation name="getCurrentUser">
+            <input message="tpns:GetCurrentUserRequestMessage"/>
+            <output message="tpns:GetCurrentUserResponseMessage"/>
+        </operation>
+        <operation name="getDriverGroup">
+            <input message="tpns:GetDriverGroupRequestMessage"/>
+            <output message="tpns:GetDriverGroupResponseMessage"/>
+        </operation>
+    </portType>
+    <binding name="BasicServiceBinding" type="tpns:BasicService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="login">
+            <soap:operation soapAction="login"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="logout">
+            <soap:operation soapAction="logout"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getFleet">
+            <soap:operation soapAction="getFleet"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getVehicle">
+            <soap:operation soapAction="getVehicle"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getVehicleGroup">
+            <soap:operation soapAction="getVehicleGroup"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getServerProperties">
+            <soap:operation soapAction="getServerProperties"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getStatusDef">
+            <soap:operation soapAction="getStatusDef"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getUser">
+            <soap:operation soapAction="getUser"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getDriver">
+            <soap:operation soapAction="getDriver"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getCurrentUser">
+            <soap:operation soapAction="getCurrentUser"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getDriverGroup">
+            <soap:operation soapAction="getDriverGroup"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="BasicService">
+        <documentation>
+            FleetBoard Transporting BasicService
+        </documentation>
+        <port binding="tpns:BasicServiceBinding" name="BasicService">
+            <soap:address location="http://www.fleetboard.com/soap_v1_1/services/BasicService"/>
+        </port>
+    </service>
+</definitions>

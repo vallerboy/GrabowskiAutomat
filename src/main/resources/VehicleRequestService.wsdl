@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Valid from 2010/12/04, WebServices / FBSC version 1.5.0 -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tp="http://www.fleetboard.com/data" xmlns:tpns="http://ws.fleetboard.com/VehicleRequestService" targetNamespace="http://ws.fleetboard.com/VehicleRequestService">
+	<types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://www.fleetboard.com/data">
+			<xs:simpleType name="inoidType">
+				<xs:restriction base="xs:string"/>
+			</xs:simpleType>
+			<xs:simpleType name="fbidType">
+				<xs:restriction base="xs:string"/>
+			</xs:simpleType>
+			<xs:simpleType name="sessionidType">
+				<xs:restriction base="xs:string"/>
+			</xs:simpleType>
+			<xs:simpleType name="vehicleidType">
+				<xs:restriction base="xs:long"/>
+			</xs:simpleType>
+			<xs:simpleType name="vehicleGroupIDType">
+				<xs:restriction base="xs:long"/>
+			</xs:simpleType>
+			<xs:simpleType name="limitType">
+				<xs:restriction base="xs:integer"/>
+			</xs:simpleType>
+			<xs:simpleType name="offsetType">
+				<xs:restriction base="xs:integer"/>
+			</xs:simpleType>
+			<xs:simpleType name="resultSizeType">
+				<xs:restriction base="xs:integer"/>
+			</xs:simpleType>
+			<xs:simpleType name="responseSizeType">
+				<xs:restriction base="xs:integer"/>
+			</xs:simpleType>
+			<xs:simpleType name="driverNameIDType">
+				<xs:restriction base="xs:long"/>
+			</xs:simpleType>
+			<xs:simpleType name="versionType">
+				<xs:restriction base="xs:long"/>
+			</xs:simpleType>
+			<xs:complexType name="OKType">
+				<xs:annotation>
+					<xs:documentation>
+                        Datensaetze, fuer die die Aktion erfolgreich war
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="OkResult" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+                                Attribut: @id
+                            </xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="id" type="xs:long" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ErrorType">
+				<xs:annotation>
+					<xs:documentation>
+                        Datensaetze, fuer die die Aktion nicht erfolgreich
+						war
+                    </xs:documentation>
+				</xs:annotation>
+				<xs:sequence>
+					<xs:element name="ErrorResult" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>
+                                Attribute: @id, @faultcode
+                            </xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:attribute name="id" type="xs:long" use="required"/>
+							<xs:attribute name="faultcode" type="xs:long" use="required"/>
+							<xs:attribute name="faultstring" type="xs:string" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="SendVehicleRequestType">
+				<xs:sequence>
+					<xs:element name="VehicleID" type="tp:vehicleidType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="VehicleGroupID" type="tp:vehicleGroupIDType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="RequestType" maxOccurs="unbounded" minOccurs="1">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="FREETEXT"/>
+								<xs:enumeration value="POSREQUEST"/>
+								<xs:enumeration value="DRIVE_PAUSE"/>
+								<xs:enumeration value="TCODATA"/>
+								<xs:enumeration value="AM_PERFORMANCE_ANALYSIS"/>
+								<xs:enumeration value="MB_PERFORMANCE_ANALYSIS"/>
+								<xs:enumeration value="SERVICE_PROGNOSIS"/>
+								<xs:enumeration value="STATUS_CHECK"/>
+								<xs:enumeration value="ALL_ERRORS"/>
+								<xs:enumeration value="ACTIVE_ERRORS"/>
+								<xs:enumeration value="ECULIST"/>
+								<xs:enumeration value="INDIVIDUAL"/>
+								<xs:enumeration value="DYNDP01"/>
+								<xs:enumeration value="DYNDP02"/>
+								<xs:enumeration value="DYNDP03"/>
+								<xs:enumeration value="DYNDP04"/>
+								<xs:enumeration value="DYNDP05"/>
+								<xs:enumeration value="DYNDP06"/>
+								<xs:enumeration value="DYNDP07"/>
+								<xs:enumeration value="DYNDP08"/>
+								<xs:enumeration value="DYNDP09"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="FreeText" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Title" type="xs:string" minOccurs="1" maxOccurs="1"/>
+								<xs:element name="Content" type="xs:string" minOccurs="1" maxOccurs="1"/>
+								<xs:element name="Confirmation" minOccurs="1" maxOccurs="1">
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:enumeration value="true"/>
+											<xs:enumeration value="false"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="Charset" type="xs:int" minOccurs="0" maxOccurs="1">
+									<xs:annotation>
+										<xs:documentation>
+                                            1: EvoBus_WesternEurope (default)
+											2: EvoBus_Greek (not supported yet)
+											3: EvoBus_Hebrew (not supported yet)
+											4: EvoBus_Cyrillic (not supported yet)
+											5: EvoBus_Baltic (not supported yet)
+                                        </xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="limit" type="tp:limitType" use="optional"/>
+				<xs:attribute name="offset" type="tp:offsetType" use="optional"/>
+				<xs:attribute name="version" type="tp:versionType" use="optional"/>
+			</xs:complexType>
+			<xs:element name="SendVehicleRequestRequest" type="tp:SendVehicleRequestType">
+				<xs:annotation>
+					<xs:documentation>
+                        Request document for sendVehicleRequest
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sendVehicleRequest">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="tp:SendVehicleRequestRequest"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:complexType name="SendVehicleRequestResponseType">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="Ok" type="tp:OKType"/>
+					<xs:element minOccurs="0" name="Error" type="tp:ErrorType"/>
+				</xs:sequence>
+				<xs:attribute name="limit" type="tp:limitType"/>
+				<xs:attribute name="offset" type="tp:offsetType"/>
+				<xs:attribute name="resultSize" type="tp:resultSizeType"/>
+				<xs:attribute name="responseSize" type="tp:responseSizeType"/>
+			</xs:complexType>
+			<xs:element name="SendVehicleRequestResponse" type="tp:SendVehicleRequestResponseType">
+				<xs:annotation>
+					<xs:documentation>
+                        Response document for sendVehicleRequest
+                    </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sendVehicleRequestResponse">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="tp:SendVehicleRequestResponse"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</types>
+	<message name="SendVehicleRequestRequestMessage">
+		<part name="body" element="tp:sendVehicleRequest"/>
+	</message>
+	<message name="SendVehicleRequestResponseMessage">
+		<part name="body" element="tp:sendVehicleRequestResponse"/>
+	</message>
+	<portType name="VehicleRequestServiceInterface">
+		<operation name="sendVehicleRequest">
+			<input message="tpns:SendVehicleRequestRequestMessage"/>
+			<output message="tpns:SendVehicleRequestResponseMessage"/>
+		</operation>
+	</portType>
+	<binding name="VehicleRequestService" type="tpns:VehicleRequestServiceInterface">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="sendVehicleRequest">
+			<soap:operation soapAction="sendVehicleRequest"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="VehicleRequestService">
+		<documentation>
+            FleetBoard VehicleRequest Service
+        </documentation>
+		<port name="VehicleRequestService" binding="tpns:VehicleRequestService">
+			<soap:address location="http://www.fleetboard.com/vmsoap_v1_1/services/VehicleRequestService"/>
+		</port>
+	</service>
+</definitions>
